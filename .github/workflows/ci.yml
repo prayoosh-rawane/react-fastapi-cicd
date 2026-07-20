@@ -75,8 +75,8 @@ jobs:
       matrix:
         service: [backend, frontend]
 
-      steps:
-        - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-        - name: Build ${{ matrix.service }} image
-          run: docker build -t ${{ matrix.service }}:ci ./${{ matrix.service }}
+      - name: Build ${{ matrix.service }} image
+        run: docker build -t ${{ matrix.service }}:ci ./${{ matrix.service }}
