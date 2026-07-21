@@ -1,122 +1,118 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useRef, useState } from "react";
+import heroImg from "./assets/hero.png";
+import "./App.css";
+
+const launchStages = [
+  { label: "Warming up", color: "warm" },
+  { label: "Building", color: "build" },
+  { label: "Testing", color: "test" },
+  { label: "Deploying", color: "deploy" },
+  { label: "Lift off!", color: "complete" },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [stage, setStage] = useState("Ready to launch");
+  const [isRunning, setIsRunning] = useState(false);
+  const [count, setCount] = useState(0);
+  const timeoutRefs = useRef([]);
+
+  useEffect(() => {
+    return () =>
+      timeoutRefs.current.forEach((timeout) => clearTimeout(timeout));
+  }, []);
+
+  const startLaunch = () => {
+    timeoutRefs.current.forEach((timeout) => clearTimeout(timeout));
+    timeoutRefs.current = [];
+
+    setIsRunning(true);
+    setCount((value) => value + 1);
+    setStage("Warming up");
+
+    launchStages.slice(1).forEach((entry, index) => {
+      timeoutRefs.current.push(
+        setTimeout(
+          () => {
+            setStage(entry.label);
+            if (entry.label === "Lift off!") {
+              setTimeout(() => setIsRunning(false), 800);
+            }
+          },
+          (index + 1) * 1000,
+        ),
+      );
+    });
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main className="app-shell">
+      <section className="stage">
+        <div className="space-viewport">
+          <div className="launch-pad">
+            <img src={heroImg} className="launch-core" alt="Launch module" />
+            <div className="spark spark-a" />
+            <div className="spark spark-b" />
+            <div className="spark spark-c" />
+          </div>
+          <div className="planet orbit orbit-one" />
+          <div className="planet orbit orbit-two" />
+          <div className="planet orbit orbit-three" />
+          <div className="star star-a" />
+          <div className="star star-b" />
+          <div className="star star-c" />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+        <div className="launch-panel">
+          <div className="title-block">
+            <p className="eyebrow">Project playground</p>
+            <h1>Launch Control</h1>
+            <p>
+              A playful frontend demo that animates a build pipeline and makes
+              your project fun to watch.
+            </p>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
+          <div className="status-card">
+            <span className="status-label">Current stage</span>
+            <strong
+              className={`status-value ${stage.replace(/\s+/g, "-").toLowerCase()}`}
+            >
+              {stage}
+            </strong>
+            <p className="status-note">
+              {isRunning
+                ? "Your pipeline is moving through the launch sequence."
+                : "Hit launch to see the build flow in action."}
+            </p>
+          </div>
+
+          <div className="action-row">
+            <button className="launch-button" onClick={startLaunch}>
+              {isRunning ? "Reignite" : "Start launch"}
+            </button>
+            <div className="launch-count">Count: {count}</div>
+          </div>
+
+          <div className="pipeline-bar">
+            {launchStages.map((entry, index) => {
+              const activeIndex = launchStages.findIndex(
+                (item) => item.label === stage,
+              );
+              const progressState = index <= activeIndex ? "active" : "idle";
+              return (
+                <div
+                  key={entry.label}
+                  className={`stage-step ${progressState}`}
                 >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+                  <span>{entry.label}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    </main>
+  );
 }
 
-export default App
+export default App;
