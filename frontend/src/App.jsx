@@ -64,7 +64,7 @@ function App() {
 
         <div className="launch-panel">
           <div className="title-block">
-            <p className="eyebrow">Project playground</p>
+            <p className="eyebrow">Project's playground</p>
             <h1>Launch Control</h1>
             <p>
               A playful frontend demo that animates a build pipeline and makes
