@@ -36,18 +36,24 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/react-fastapi-cicd-${{ matrix.service }}:${{ github.sha }}
             ghcr.io/${{ github.repository_owner }}/react-fastapi-cicd-${{ matrix.service }}:latest
 
-  deploy-backend:
-    name: Deploy Backend
+  deploy-staging:
+    name: Deploy to Staging
     needs: build-and-push
     runs-on: ubuntu-latest
+    envirnonment: staging
     steps:
-      - name: Trigger render deploy - backend
-        run: curl -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
+      - name: Deploy backend to staging
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}"
+      - name: Deploy frontend to staging
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND }}"
 
-  deploy-frontend:
-    name: Deploy Frontend
+  deploy-production:
+    name: Deploy to Production
     needs: build-and-push
     runs-on: ubuntu-latest
+    environment: production
     steps:
-      - name: Trigger Render deploy — frontend
-        run: curl -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}"
+      - name: Deploy backend to production
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}"
+      - name: Deploy frontend to production
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND }}"
