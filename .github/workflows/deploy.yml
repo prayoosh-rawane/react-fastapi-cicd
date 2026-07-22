@@ -40,7 +40,7 @@ jobs:
     name: Deploy to Staging
     needs: build-and-push
     runs-on: ubuntu-latest
-    envirnonment: staging
+    environment: staging
     steps:
       - name: Deploy backend to staging
         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}"
